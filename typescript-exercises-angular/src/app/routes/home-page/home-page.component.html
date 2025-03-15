@@ -1,0 +1,17 @@
+<div class="home-page-wrapper">
+    <h1>Cześć {{user.name}}, witaj w ManageMe!</h1>
+
+    <ul>
+        <li>
+            <a routerLink="/projects">Projekty</a>
+        </li>
+        <li>
+            <a routerLink="/about">Informacje</a>
+        </li>
+        @if(selectedProject){
+            <li>
+                <a [routerLink]="'/project/'+selectedProject.id">{{selectedProject.name}}</a>
+            </li>
+        }
+    </ul>
+</div>

@@ -1,0 +1,29 @@
+<div class="projects-header-container">
+    <h1>Projekty</h1>
+    <button routerLink="/create-project">+ Dodaj projekt</button>
+</div>
+<div class="projects-container">
+    @if(projects.length){
+        @for (project of projects; track project.id) {
+            <div class="project-item" [class.selected]="project.isSelected">
+                <h6>{{project.name}} {{(project.isSelected ? '(Domyślny)' : '')}}</h6>
+                <div class="buttons-container">
+                    <button [matTooltip]="project.isSelected ? 'Domyślny' : 'Ustaw jako domyślny'" [class.selected]="project.isSelected" (click)="!project.isSelected && onSelectProject($event, project.id)">
+                        <mat-icon>power_settings_new</mat-icon>
+                    </button>
+                    <button matTooltip="Edytuj" [routerLink]="'/edit-project/'+project.id">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button matTooltip="Usuń projekt" (click)="onDeleteProject($event, project.id)">
+                        <mat-icon>restore_from_trash</mat-icon>
+                    </button>
+                </div>
+            </div>
+        }
+    }
+    @else{
+        <div class="no-items-container">
+            Brak projektów
+        </div>
+    }
+</div>
