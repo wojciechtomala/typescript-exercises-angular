@@ -1,20 +1,20 @@
 <header class="navbar-container">
-    <div class="navbar-logo">
-        <a routerLink="/" class="navbar-logo-title">ManageMe</a>
-    </div>
-    <nav>
-        <ul>
-            <li>
-                <a routerLink="/projects">Projekty</a>
-            </li>
-            <li>
-                <a routerLink="/about">Informacje</a>
-            </li>
-            <li>
-                <a routerLink="/my-account" class="my-account-avatar">
-                    WT
-                </a>
-            </li>
-        </ul>
-    </nav>
+  <div class="navbar-logo">
+    <a routerLink="/" class="navbar-logo-title">ManageMe</a>
+  </div>
+  <nav>
+    <ul>
+      <li>
+        <a routerLink="/projects">Projekty</a>
+      </li>
+      <li>
+        <a routerLink="/about">Informacje</a>
+      </li>
+      <li>
+        <a routerLink="/my-account" class="my-account-avatar">
+          {{ user.name.charAt(0) + user.surname.charAt(0) }}
+        </a>
+      </li>
+    </ul>
+  </nav>
 </header>

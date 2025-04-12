@@ -6,20 +6,24 @@ import { NewProject } from '../../models/newProject.model';
 import { Project } from '../../models/project.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProjectService {
+  private _projects: BehaviorSubject<Project[]> = new BehaviorSubject<
+    Project[]
+  >([]);
 
-  private _projects: BehaviorSubject<Project[]> = new BehaviorSubject<Project[]>([]);
-  
-  public readonly projects$: Observable<Project[]> = this._projects.asObservable();
+  public readonly projects$: Observable<Project[]> =
+    this._projects.asObservable();
 
   constructor(private _httpClient: HttpClient) {
     this.getProjectsFromLocalStorage();
   }
 
-  private getProjectsFromLocalStorage(): void {
-    const currentProjects = localStorage.getItem(environment.localStorageProjectsKey);
+  public getProjectsFromLocalStorage(): void {
+    const currentProjects = localStorage.getItem(
+      environment.localStorageProjectsKey
+    );
     this._projects.next(currentProjects ? JSON.parse(currentProjects) : []);
   }
 
@@ -28,46 +32,65 @@ export class ProjectService {
   }
 
   public setSelectedProject(projectId: number): void {
-    const currentProjects = this.getAllProjects().map(project => ({
+    const currentProjects = this.getAllProjects().map((project) => ({
       ...project,
-      isSelected: project.id === projectId
+      isSelected: project.id === projectId,
     }));
-    localStorage.setItem(environment.localStorageProjectsKey, JSON.stringify(currentProjects));
+    localStorage.setItem(
+      environment.localStorageProjectsKey,
+      JSON.stringify(currentProjects)
+    );
     this._projects.next(currentProjects);
   }
 
-  public getSelectedProject() : Project | undefined {
+  public getSelectedProject(): Project | undefined {
     const currentProjects = this.getAllProjects();
     return currentProjects.find((project) => project.isSelected);
   }
 
   public getProjectById(id: number): Project | undefined {
     const projects = this._projects.getValue();
-    return projects.find(project => project.id === id);
+    return projects.find((project) => project.id === id);
   }
 
   public createNewLocalStorageProject(newProject: NewProject): void {
     const currentProjects = this.getAllProjects();
-    const project : Project = { ...newProject, id: currentProjects.length, isSelected: currentProjects.length === 0};
+    const project: Project = {
+      ...newProject,
+      id: currentProjects.length,
+      isSelected: currentProjects.length === 0,
+      stories: [],
+    };
     currentProjects.push(project);
-    localStorage.setItem(environment.localStorageProjectsKey, JSON.stringify(currentProjects));
+    localStorage.setItem(
+      environment.localStorageProjectsKey,
+      JSON.stringify(currentProjects)
+    );
     this.getProjectsFromLocalStorage();
   }
 
   public updateProject(updatedProject: Project): void {
-    const currentProjects = this.getAllProjects().map(project => {
+    const currentProjects = this.getAllProjects().map((project) => {
       if (project.id === updatedProject.id) {
         return updatedProject;
       }
       return project;
     });
-    localStorage.setItem(environment.localStorageProjectsKey, JSON.stringify(currentProjects));
+    localStorage.setItem(
+      environment.localStorageProjectsKey,
+      JSON.stringify(currentProjects)
+    );
     this._projects.next(currentProjects);
   }
 
   public deleteProjectFromLocalStorage(id: number): void {
-    const currentProjects = this.getAllProjects().filter(project => project.id !== id);
-    localStorage.setItem(environment.localStorageProjectsKey, JSON.stringify(currentProjects));
+    const currentProjects = this.getAllProjects().filter(
+      (project) => project.id !== id
+    );
+    localStorage.setItem(
+      environment.localStorageProjectsKey,
+      JSON.stringify(currentProjects)
+    );
     this.getProjectsFromLocalStorage();
   }
 

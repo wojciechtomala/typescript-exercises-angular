@@ -1,1 +1,30 @@
-<p>project-details-page works!</p>
+<h1>Nazwa projektu: {{ projectDetails.name }}</h1>
+<p>{{ projectDetails.description }}</p>
+<div class="stories-list-container">
+  <div class="stories-list-header-container">
+    <form [formGroup]="storiesFilterForm">
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="All">All</mat-option>
+          @for (storyStatus of storyStatuses; track $index) {
+          <mat-option [value]="storyStatus">{{ storyStatus }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </div>
+  <div class="stories-list-content-container">
+    @for (story of projectDetails.stories; track $index) {
+    <div>
+      <ul>
+        <li>{{ story.name }}</li>
+        <li>{{ story.description }}</li>
+        <li>{{ story.createDate }}</li>
+        <li>{{ story.priority }}</li>
+        <li>{{ story.status }}</li>
+      </ul>
+    </div>
+    }
+  </div>
+</div>
