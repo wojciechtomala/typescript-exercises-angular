@@ -1,10 +1,15 @@
-form{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px;
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: 10px;
-    background-color: #FFF;
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background-color: #fff;
+}
+.actions-container {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
 }

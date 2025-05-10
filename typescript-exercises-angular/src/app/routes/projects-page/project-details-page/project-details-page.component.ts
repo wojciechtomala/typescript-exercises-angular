@@ -6,6 +6,8 @@ import { Status, Story } from '../../../shared/models/story.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { AddStoryModalComponent } from '../../../shared/modals/add-story-modal/add-story-modal.component';
 
 type StatusSelect = Status | 'All';
 
@@ -29,7 +31,8 @@ export class ProjectDetailsPageComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     private activatedRoute: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private dialog: MatDialog
   ) {
     this.routeId = +this.activatedRoute.snapshot.params['id'];
     this.storiesFilterForm = this.formBuilder.group({
@@ -48,5 +51,16 @@ export class ProjectDetailsPageComponent implements OnInit {
     } else {
       alert('No project data found');
     }
+  }
+
+  public onAddStoryClick(): void {
+    const dialogRef = this.dialog.open(AddStoryModalComponent, {
+      width: '620px',
+      data: {},
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
+    });
   }
 }

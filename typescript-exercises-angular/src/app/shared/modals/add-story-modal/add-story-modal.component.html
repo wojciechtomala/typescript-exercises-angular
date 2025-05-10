@@ -1,0 +1,54 @@
+<h2 mat-dialog-title>Dodaj nową historyjkę</h2>
+<mat-dialog-content>
+  <form class="add-story-modal-form" [formGroup]="addStoryModalForm">
+    <div class="row grid-1">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nazwa historyjki</mat-label>
+        <input matInput formControlName="name" placeholder="Story name" />
+        @if (addStoryModalForm.get('name')?.hasError('required')) {
+        <mat-error> Nazwa historyjki jest wymagana </mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="row grid-1">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Opis</mat-label>
+        <textarea
+          matInput
+          formControlName="description"
+          placeholder="Describe the story"
+        ></textarea>
+        @if(addStoryModalForm.get('description')?.hasError('required')){
+        <mat-error> Opis historyjki jest wymagany </mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="row grid-2">
+      <mat-form-field appearance="outline">
+        <mat-label>Priority</mat-label>
+        <mat-select formControlName="priority">
+          @for (priority of priorities; track $index) {
+          <mat-option [value]="priority">{{ priority }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          @for (status of statuses; track $index) {
+          <mat-option [value]="status">{{ status }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close="cancel">Anuluj</button>
+  <button mat-button cdkFocusInitial [mat-dialog-close]="onSubmit()">
+    Zapisz
+  </button>
+</mat-dialog-actions>

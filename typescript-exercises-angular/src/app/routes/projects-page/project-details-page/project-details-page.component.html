@@ -1,5 +1,5 @@
 <h1>Nazwa projektu: {{ projectDetails.name }}</h1>
-<p>{{ projectDetails.description }}</p>
+<p>Opis projektu: {{ projectDetails.description }}</p>
 <div class="stories-list-container">
   <div class="stories-list-header-container">
     <form [formGroup]="storiesFilterForm">
@@ -13,6 +13,12 @@
         </mat-select>
       </mat-form-field>
     </form>
+
+    <div class="actions-container">
+      <button class="add-story-btn" (click)="onAddStoryClick()">
+        + Dodaj nową historyjkę
+      </button>
+    </div>
   </div>
   <div class="stories-list-content-container">
     @for (story of projectDetails.stories; track $index) {
