@@ -7,7 +7,7 @@ import { environment } from '../../constants/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class StoriesServiceService {
+export class StoriesService {
   constructor(private projectService: ProjectService) {}
 
   public createStory(projectId: number, newStory: NewStory): void {
@@ -31,13 +31,10 @@ export class StoriesServiceService {
   public updateStory(projectId: number, updatedStory: Story): void {
     const projects = this.projectService.getAllProjects();
     const project = projects.find((p) => p.id === projectId);
-
     if (!project) return;
-
     project.stories = project.stories.map((story) =>
       story.id === updatedStory.id ? updatedStory : story
     );
-
     this.updateProjects(projects);
   }
 
@@ -55,6 +52,21 @@ export class StoriesServiceService {
   public getStories(projectId: number): Story[] {
     const project = this.projectService.getProjectById(projectId);
     return project?.stories ?? [];
+  }
+
+  public getStory(storyId: number): Story | null {
+    const projects = this.projectService.getAllProjects();
+
+    for (const project of projects) {
+      const story = project.stories.find(
+        (storyItem) => storyItem.id === storyId
+      );
+      if (story) {
+        return story;
+      }
+    }
+
+    return null;
   }
 
   private updateProjects(projects: Project[]): void {

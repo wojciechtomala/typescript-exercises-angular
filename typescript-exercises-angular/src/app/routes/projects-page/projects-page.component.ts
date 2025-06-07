@@ -4,14 +4,26 @@ import { ProjectService } from '../../shared/services/projectService/project.ser
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faInbox, faThumbtack } from '@fortawesome/free-solid-svg-icons';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-projects-page',
-  imports: [RouterLink, MatIconModule, MatTooltipModule],
+  imports: [
+    RouterLink,
+    MatIconModule,
+    MatTooltipModule,
+    FontAwesomeModule,
+    MatButtonModule,
+  ],
   templateUrl: './projects-page.component.html',
-  styleUrl: './projects-page.component.scss'
+  styleUrl: './projects-page.component.scss',
 })
-export class ProjectsPageComponent implements OnInit{
+export class ProjectsPageComponent implements OnInit {
+  public readonly faThumbtack = faThumbtack;
+
+  public readonly faInbox = faInbox;
 
   public projects: Project[] = [];
 
@@ -23,17 +35,17 @@ export class ProjectsPageComponent implements OnInit{
     this.fetchProjects();
   }
 
-  private fetchProjects() : void {
+  private fetchProjects(): void {
     this.projects = this.projectService.getAllProjects();
   }
 
-  public onSelectProject(e: Event, projectId: number) : void {
+  public onSelectProject(e: Event, projectId: number): void {
     e.stopPropagation();
     this.projectService.setSelectedProject(projectId);
     this.fetchProjects();
   }
 
-  public onDeleteProject(e: Event, projectId: number) : void {
+  public onDeleteProject(e: Event, projectId: number): void {
     e.stopPropagation();
     this.projectService.deleteProjectFromLocalStorage(projectId);
     this.fetchProjects();

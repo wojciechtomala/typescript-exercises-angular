@@ -17,7 +17,7 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { NewStory, Priority, Status } from '../../models/story.model';
+import { NewStory, Priority, Status, Story } from '../../models/story.model';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -29,9 +29,10 @@ import { StoriesService } from '../../services/storiesService/stories-service.se
 
 interface ModalData {
   projectId: number;
+  storyId: number;
 }
 @Component({
-  selector: 'app-add-story-modal',
+  selector: 'app-edit-story-modal',
   imports: [
     MatFormFieldModule,
     MatInputModule,
@@ -46,20 +47,22 @@ interface ModalData {
     MatNativeDateModule,
     MatDialogClose,
   ],
-  templateUrl: './add-story-modal.component.html',
-  styleUrl: './add-story-modal.component.scss',
+  templateUrl: './edit-story-modal.component.html',
+  styleUrl: './edit-story-modal.component.scss',
 })
-export class AddStoryModalComponent implements OnInit {
+export class EditStoryModalComponent implements OnInit {
   private projectId: number | null;
 
-  public addStoryModalForm!: FormGroup;
+  private storyId: number | null;
+
+  public editStoryModalForm!: FormGroup;
 
   public readonly priorities: Priority[] = priorities;
 
   public readonly statuses: Status[] = statuses;
 
   constructor(
-    public dialogRef: MatDialogRef<AddStoryModalComponent>,
+    public dialogRef: MatDialogRef<EditStoryModalComponent>,
     private formBuilder: FormBuilder,
     private _snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public matDialogData: ModalData,
@@ -67,13 +70,19 @@ export class AddStoryModalComponent implements OnInit {
     private storiesService: StoriesService
   ) {
     this.projectId = this.matDialogData.projectId;
-    if (typeof this.projectId !== 'number') {
+    this.storyId = this.matDialogData.storyId;
+    if (
+      typeof this.projectId !== 'number' ||
+      typeof this.storyId !== 'number'
+    ) {
       this.dialogRef.close();
     }
   }
 
   ngOnInit(): void {
-    this.initAddStoryModalForm();
+    this.initEditStoryModalForm();
+    console.log(this.storyId, this.projectId);
+    this.getFormValuesByStoryId();
   }
 
   private async getUserId(): Promise<string> {
@@ -81,34 +90,46 @@ export class AddStoryModalComponent implements OnInit {
     return loggedInUser.id;
   }
 
-  private initAddStoryModalForm(): void {
-    this.addStoryModalForm = this.formBuilder.group({
+  private initEditStoryModalForm(): void {
+    this.editStoryModalForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
       description: ['', [Validators.required]],
-      priority: ['Mid', Validators.required],
+      priority: ['', Validators.required],
       createDate: [null, Validators.required],
-      status: ['Todo', Validators.required],
+      status: ['', Validators.required],
       ownerId: ['', Validators.required],
     });
+  }
+
+  private getFormValuesByStoryId(): void {
+    if (typeof this.storyId === 'number') {
+      console.log(this.storyId);
+      const story = this.storiesService.getStory(this.storyId);
+      if (story) {
+        console.log(story);
+        this.editStoryModalForm.patchValue(story);
+      }
+    }
   }
 
   public async onSubmit(): Promise<void> {
     const ownerId = await this.getUserId();
     if (ownerId) {
       const newStoryCreateDate = new Date().toISOString().substring(0, 10);
-      this.addStoryModalForm.patchValue({
+      this.editStoryModalForm.patchValue({
         createDate: newStoryCreateDate,
         ownerId: ownerId,
       });
-      if (this.addStoryModalForm.valid) {
-        const newStory: NewStory = {
-          ...this.addStoryModalForm.value,
+      if (this.editStoryModalForm.valid) {
+        const updatedStory: Story = {
+          ...this.editStoryModalForm.value,
           projectId: this.projectId,
+          id: this.storyId,
         };
-        console.log('Submitting Story:', newStory);
+        console.log('Submitting Story:', updatedStory);
         if (typeof this.projectId === 'number') {
-          this.storiesService.createStory(this.projectId, newStory);
-          this._snackBar.open('Sukces: utworzono nową historyjkę', 'Zamknij', {
+          this.storiesService.updateStory(this.projectId, updatedStory);
+          this._snackBar.open('Sukces: zedytowano historyjkę', 'Zamknij', {
             duration: 3000,
           });
         } else {

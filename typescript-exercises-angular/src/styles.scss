@@ -31,6 +31,11 @@ body {
   background-color: #efefef;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+  text-decoration: none;
+  color: #212121;
   &.primary {
     background-color: #2b70ca;
     color: #fff;

@@ -1,4 +1,8 @@
-<form [formGroup]="editProjectForm" class="project-form">
+<form
+  [formGroup]="editProjectForm"
+  class="project-form"
+  (ngSubmit)="onSubmit()"
+>
   <mat-form-field appearance="outline">
     <mat-label>Nazwa</mat-label>
     <input matInput formControlName="name" />
@@ -56,11 +60,11 @@
   </mat-form-field>
 
   <div class="actions-container">
-    <button color="primary" class="shared-btn">Anuluj</button>
+    <a color="primary" class="shared-btn" routerLink="/projects">Anuluj</a>
     <button
       class="shared-btn primary"
-      (click)="onSubmit()"
       [disabled]="editProjectForm.invalid"
+      type="submit"
     >
       Zapisz
     </button>

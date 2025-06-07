@@ -1,5 +1,7 @@
-<h1>Nazwa projektu: {{ projectDetails.name }}</h1>
-<p>Opis projektu: {{ projectDetails.description }}</p>
+<div class="stories-list-header">
+  <h1>Nazwa projektu: {{ projectDetails.name }}</h1>
+  <p>Opis projektu: {{ projectDetails.description }}</p>
+</div>
 <div class="stories-list-container">
   <div class="stories-list-header-container">
     <form [formGroup]="storiesFilterForm">
@@ -15,21 +17,33 @@
     </form>
 
     <div class="actions-container">
-      <button class="add-story-btn" (click)="onAddStoryClick()">
+      <button
+        class="add-story-btn"
+        (click)="onAddStoryClick()"
+        mat-raised-button
+      >
         + Dodaj nową historyjkę
       </button>
     </div>
   </div>
   <div class="stories-list-content-container">
-    @for (story of projectDetails.stories; track $index) {
-    <div>
-      <ul>
-        <li>{{ story.name }}</li>
-        <li>{{ story.description }}</li>
-        <li>{{ story.createDate }}</li>
-        <li>{{ story.priority }}</li>
-        <li>{{ story.status }}</li>
-      </ul>
+    @for (story of filteredStories; track $index) {
+    <div class="story-item" (click)="onEditStoryClick(story.id)">
+      <div class="story-main-content">
+        <div class="story-title">
+          <h6>{{ story.name }}</h6>
+          <div class="story-tags">
+            <div class="story-tag" [class]="story.priority">
+              {{ story.priority }}
+            </div>
+            <div class="story-tag" [class]="story.status">
+              {{ story.status }}
+            </div>
+          </div>
+        </div>
+        <p>{{ story.description }}</p>
+      </div>
+      <p class="story-created-at-content">{{ story.createDate }}</p>
     </div>
     }
   </div>

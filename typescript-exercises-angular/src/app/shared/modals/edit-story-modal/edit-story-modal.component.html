@@ -1,13 +1,13 @@
 <h2 mat-dialog-title>
-  <div class="dialog-title-content">Dodaj nową historyjkę</div>
+  <div class="dialog-title-content">Edytuj historyjkę</div>
 </h2>
 <mat-dialog-content>
-  <form class="add-story-modal-form" [formGroup]="addStoryModalForm">
+  <form class="add-story-modal-form" [formGroup]="editStoryModalForm">
     <div class="row grid-1">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nazwa historyjki</mat-label>
         <input matInput formControlName="name" placeholder="Story name" />
-        @if (addStoryModalForm.get('name')?.hasError('required')) {
+        @if (editStoryModalForm.get('name')?.hasError('required')) {
         <mat-error> Nazwa historyjki jest wymagana </mat-error>
         }
       </mat-form-field>
@@ -21,7 +21,7 @@
           formControlName="description"
           placeholder="Describe the story"
         ></textarea>
-        @if(addStoryModalForm.get('description')?.hasError('required')){
+        @if(editStoryModalForm.get('description')?.hasError('required')){
         <mat-error> Opis historyjki jest wymagany </mat-error>
         }
       </mat-form-field>

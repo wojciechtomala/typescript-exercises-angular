@@ -1,17 +1,25 @@
 <div class="home-page-wrapper">
-    <h1>Cześć {{user.name}}, witaj w ManageMe!</h1>
+  <h1>
+    Cześć <b>{{ user.name }}</b
+    >, witaj w ManageMe!
+  </h1>
 
-    <ul>
-        <li>
-            <a routerLink="/projects">Projekty</a>
-        </li>
-        <li>
-            <a routerLink="/about">Informacje</a>
-        </li>
-        @if(selectedProject){
-            <li>
-                <a [routerLink]="'/project/'+selectedProject.id">{{selectedProject.name}}</a>
-            </li>
-        }
-    </ul>
+  <ul>
+    <li>
+      <a routerLink="/projects">Projekty</a>
+    </li>
+    <li>
+      <a routerLink="/about">Informacje</a>
+    </li>
+    @if(selectedProject){
+    <li>
+      <a [routerLink]="'/project/' + selectedProject.id">
+        <fa-icon [icon]="faThumbtack" />{{ selectedProject.name }}</a
+      >
+    </li>
+    }
+    <li>
+      <a routerLink="/my-account">Moje konto</a>
+    </li>
+  </ul>
 </div>

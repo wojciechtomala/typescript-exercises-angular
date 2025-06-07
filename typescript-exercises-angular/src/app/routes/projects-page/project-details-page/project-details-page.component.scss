@@ -1,3 +1,21 @@
+.stories-list-header {
+  padding: 10px 20px;
+  box-sizing: border-box;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  h1 {
+    font-weight: 500;
+    font-size: 22px;
+  }
+  p {
+    font-size: 14px;
+    color: #666;
+  }
+}
 .stories-list-container {
   background-color: #fff;
   padding: 5px 20px;
@@ -25,5 +43,66 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding-bottom: 15px;
+    .story-item {
+      cursor: pointer;
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: 1fr min-content;
+      box-shadow: rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+      border-radius: 5px;
+      .story-main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        .story-title {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+          h6 {
+            font-weight: 500;
+            font-size: 16px;
+          }
+          .story-tags {
+            display: flex;
+            gap: 5px;
+            .story-tag {
+              padding: 5px;
+              box-sizing: border-box;
+              font-size: 13px;
+              border-radius: 5px;
+              color: #fff;
+              font-weight: 500;
+              &.Low {
+                background-color: rgb(40, 131, 40);
+              }
+              &.Mid {
+                background-color: rgb(207, 149, 61);
+              }
+              &.High {
+                background-color: rgb(180, 44, 44);
+              }
+              &.Todo {
+                background-color: #2b70ca;
+              }
+              &.Doing {
+                background-color: orange;
+              }
+              &.Done {
+                background-color: green;
+              }
+            }
+          }
+        }
+      }
+      .story-created-at-content {
+        white-space: nowrap;
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+      }
+    }
   }
 }

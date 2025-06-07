@@ -54,12 +54,13 @@ export class ProjectService {
   }
 
   public createNewLocalStorageProject(newProject: NewProject): void {
+    console.log(newProject);
     const currentProjects = this.getAllProjects();
+    console.log(currentProjects);
     const project: Project = {
       ...newProject,
       id: currentProjects.length,
       isSelected: currentProjects.length === 0,
-      stories: [],
     };
     currentProjects.push(project);
     localStorage.setItem(

@@ -8,17 +8,25 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { AddStoryModalComponent } from '../../../shared/modals/add-story-modal/add-story-modal.component';
+import { MatButtonModule } from '@angular/material/button';
+import { EditStoryModalComponent } from '../../../shared/modals/edit-story-modal/edit-story-modal.component';
+import { statuses } from '../../../shared/constants/constants';
 
 type StatusSelect = Status | 'All';
 
 @Component({
   selector: 'app-project-details-page',
-  imports: [MatFormFieldModule, MatSelectModule, ReactiveFormsModule],
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+  ],
   templateUrl: './project-details-page.component.html',
   styleUrl: './project-details-page.component.scss',
 })
 export class ProjectDetailsPageComponent implements OnInit {
-  public storyStatuses: StatusSelect[] = ['All', 'Todo', 'Doing', 'Done'];
+  public storyStatuses: StatusSelect[] = statuses;
 
   private routeId!: number;
 
@@ -27,6 +35,8 @@ export class ProjectDetailsPageComponent implements OnInit {
   public stories: Story[] = [];
 
   public storiesFilterForm!: FormGroup;
+
+  public filteredStories: Story[] = [];
 
   constructor(
     private projectService: ProjectService,
@@ -38,6 +48,22 @@ export class ProjectDetailsPageComponent implements OnInit {
     this.storiesFilterForm = this.formBuilder.group({
       status: ['All', []],
     });
+
+    this.storiesFilterForm
+      .get('status')!
+      .valueChanges.subscribe((selectedStatus) => {
+        this.applyFilter(selectedStatus);
+      });
+  }
+
+  applyFilter(selectedStatus: string) {
+    if (selectedStatus === 'All') {
+      this.filteredStories = this.projectDetails.stories;
+    } else {
+      this.filteredStories = this.projectDetails.stories.filter(
+        (story) => story.status === selectedStatus
+      );
+    }
   }
 
   ngOnInit(): void {
@@ -48,6 +74,7 @@ export class ProjectDetailsPageComponent implements OnInit {
     const projectData = this.projectService.getProjectById(this.routeId);
     if (projectData) {
       this.projectDetails = projectData;
+      this.filteredStories = this.projectDetails.stories;
     } else {
       alert('No project data found');
     }
@@ -56,11 +83,27 @@ export class ProjectDetailsPageComponent implements OnInit {
   public onAddStoryClick(): void {
     const dialogRef = this.dialog.open(AddStoryModalComponent, {
       width: '620px',
-      data: {},
+      data: {
+        projectId: this.projectDetails.id,
+      },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed');
+    dialogRef.afterClosed().subscribe(() => {
+      this.fetchProjectDetails();
+    });
+  }
+
+  public onEditStoryClick(storyId: number): void {
+    const dialogRef = this.dialog.open(EditStoryModalComponent, {
+      width: '620px',
+      data: {
+        projectId: this.projectDetails.id,
+        storyId: storyId,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.fetchProjectDetails();
     });
   }
 }

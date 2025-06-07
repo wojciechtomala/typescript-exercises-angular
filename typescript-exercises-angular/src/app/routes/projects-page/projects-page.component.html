@@ -1,12 +1,20 @@
 <div class="projects-header-container">
   <h1>Projekty</h1>
-  <button routerLink="/create-project">+ Dodaj projekt</button>
+  <button routerLink="/create-project" mat-raised-button>
+    + Dodaj projekt
+  </button>
 </div>
 <div class="projects-container">
-  @if(projects.length){ @for (project of projects; track project.id) {
+  @if(projects.length){ @for (project of projects; track project.id; let i =
+  $index) {
   <div class="project-item" [class.selected]="project.isSelected">
     <a [routerLink]="'/project/' + project.id">
-      <h6>{{ project.name }} {{ project.isSelected ? "(Domyślny)" : "" }}</h6>
+      <h6>
+        <span>{{ i + 1 }}.</span> {{ project.name }}
+        @if(project.isSelected) {
+        <fa-icon [icon]="faThumbtack" />
+        }
+      </h6>
     </a>
     <div class="buttons-container">
       <button
@@ -28,6 +36,9 @@
     </div>
   </div>
   } } @else{
-  <div class="no-items-container">Brak projektów</div>
+  <div class="no-items-container">
+    <fa-icon [icon]="faInbox" />
+    <p>Brak projektów</p>
+  </div>
   }
 </div>

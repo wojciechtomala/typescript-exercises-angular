@@ -21,7 +21,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 15px 20px;
     box-sizing: border-box;
     background-color: #fff;
     border-radius: 5px;
@@ -37,6 +37,13 @@
     h6 {
       font-size: 16px;
       font-weight: 500;
+      span {
+        color: #222;
+        font-weight: 600;
+      }
+      fa-icon {
+        padding-left: 10px;
+      }
     }
     .buttons-container {
       display: flex;
@@ -64,5 +71,14 @@
     border: 1px dashed #999;
     border-radius: 10px;
     box-sizing: border-box;
+    flex-direction: column;
+    color: #999;
+    fa-icon {
+      font-size: 42px;
+      color: #999;
+    }
+    p {
+      user-select: none;
+    }
   }
 }
