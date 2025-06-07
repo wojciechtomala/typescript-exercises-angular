@@ -5,6 +5,7 @@ import { UserPageComponent } from './routes/user-page/user-page.component';
 import { ProjectsPageComponent } from './routes/projects-page/projects-page.component';
 import { EditProjectComponent } from './routes/projects-page/edit-project/edit-project.component';
 import { ProjectDetailsPageComponent } from './routes/projects-page/project-details-page/project-details-page.component';
+import { TasksPageComponent } from './routes/tasks-page/tasks-page.component';
 
 export const routes: Routes = [
   {
@@ -14,6 +15,10 @@ export const routes: Routes = [
   {
     path: 'projects',
     component: ProjectsPageComponent,
+  },
+  {
+    path: 'tasks',
+    component: TasksPageComponent,
   },
   {
     path: 'create-project',

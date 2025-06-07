@@ -1,3 +1,5 @@
+import { Task } from './task.model';
+
 export type Priority = 'Low' | 'Mid' | 'High';
 
 export type Status = 'Todo' | 'Doing' | 'Done';
@@ -10,6 +12,7 @@ export interface NewStory {
   createDate: Date;
   status: Status;
   ownerId: string;
+  tasks: Task[];
 }
 
 export interface Story extends NewStory {

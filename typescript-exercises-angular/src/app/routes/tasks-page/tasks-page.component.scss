@@ -1,0 +1,27 @@
+.tasks-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  h1 {
+    font-size: 22px;
+    font-weight: 500;
+  }
+  p {
+    color: #666;
+  }
+  button {
+    border: none;
+    background-color: #2b70ca;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
+.tasks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
