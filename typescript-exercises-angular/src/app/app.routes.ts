@@ -6,6 +6,7 @@ import { ProjectsPageComponent } from './routes/projects-page/projects-page.comp
 import { EditProjectComponent } from './routes/projects-page/edit-project/edit-project.component';
 import { ProjectDetailsPageComponent } from './routes/projects-page/project-details-page/project-details-page.component';
 import { TasksPageComponent } from './routes/tasks-page/tasks-page.component';
+import { TaskDetailsComponent } from './routes/tasks-page/task-details/task-details.component';
 
 export const routes: Routes = [
   {
@@ -19,6 +20,10 @@ export const routes: Routes = [
   {
     path: 'tasks',
     component: TasksPageComponent,
+  },
+  {
+    path: 'task-details/:storyId/:taskId',
+    component: TaskDetailsComponent,
   },
   {
     path: 'create-project',

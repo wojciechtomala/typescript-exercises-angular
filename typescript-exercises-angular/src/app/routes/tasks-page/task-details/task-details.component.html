@@ -1,0 +1,62 @@
+<div class="task-details-header">
+  <h1>Szczegóły historyjki: {{ task.title }}</h1>
+  <p>Data utworzenia: {{ task.createdAt }}</p>
+</div>
+<div class="task-details-body">
+  <h2>Opis:</h2>
+  <p>{{ task.description }}</p>
+</div>
+<div class="task-details-footer">
+  <div>
+    <p>Data rozpoczęcia:</p>
+    <h3>
+      {{ task.state === "Todo" ? "Nie rozpoczęto" : task.startDate }}
+    </h3>
+  </div>
+  <div>
+    <p>Przypisana osoba:</p>
+    <h3>
+      {{
+        task.state === "Doing" || task.state === "Done"
+          ? getUserNameById(task.userId)
+          : "Nieprzypisane"
+      }}
+    </h3>
+  </div>
+  <div>
+    <p>Status zadania:</p>
+    <h3>{{ task.state }}</h3>
+  </div>
+  <div>
+    <p>Data zakończenia:</p>
+    <h3>
+      {{ task.state !== "Done" ? "Brak daty zakończenia" : task.endDate }}
+    </h3>
+  </div>
+  <div>
+    <form [formGroup]="taskDetailsForm">
+      <mat-form-field appearance="outline">
+        <mat-label>Zmień przypisaną osobę</mat-label>
+        <mat-select formControlName="assignedUser">
+          <mat-option value="">Nieprzypisane</mat-option>
+          @for (user of usersToSelect; track $index) {
+          <mat-option [value]="user.id"
+            >{{ user.name }} {{ user.surname }}</mat-option
+          >
+          }
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </div>
+  <div>
+    @if(task.state !== 'Done'){ Oznacz jako zakończone
+    <button
+      mat-raised-button
+      [disabled]="task.state !== 'Doing'"
+      (click)="endTask()"
+    >
+      Zakończ
+    </button>
+    }@else{ Zadanie zakończone }
+  </div>
+</div>

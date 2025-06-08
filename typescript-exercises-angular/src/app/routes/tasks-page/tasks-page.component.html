@@ -3,8 +3,56 @@
     <h1>Zadania</h1>
     <p>Dodawaj, edytuj i zarządzaj</p>
   </div>
-  <button routerLink="/create-project" mat-raised-button>
+  <button
+    mat-raised-button
+    [disabled]="!stories.length"
+    (click)="onAddTaskModalOpen()"
+  >
     + Dodaj zadanie
   </button>
 </div>
-<div class="tasks-container"></div>
+<div class="filters-container">
+  <form [formGroup]="taskFiltersForm">
+    <mat-form-field appearance="outline">
+      <mat-label>Wybierz historyjkę</mat-label>
+      @if(stories.length){
+      <mat-select formControlName="storyId" (selectionChange)="fetchTasks()">
+        <mat-option [value]="null">Wszystkie</mat-option>
+        @for (storyItem of stories; track $index) {
+        <mat-option [value]="storyItem.id">{{ storyItem.name }}</mat-option>
+        }
+      </mat-select>
+      }
+    </mat-form-field>
+  </form>
+</div>
+<div class="tasks-container">
+  @if(tasks.length){ @for (taskItem of tasks; track $index; let i = $index) {
+  <a class="task-item">
+    <div
+      class="task-item-main-content"
+      [routerLink]="['/task-details', taskItem.storyId, taskItem.id]"
+    >
+      <h3>
+        {{ i + 1 + ". " + taskItem.title }}
+        <span>{{ "ETA: " + taskItem.estimatedWorkHours }}</span>
+      </h3>
+      <p>{{ taskItem.description }}</p>
+    </div>
+    <div class="task-item-more-content">
+      <p>{{ taskItem.createdAt }}</p>
+    </div>
+    <button
+      mat-icon-button
+      (click)="deleteTask($event, taskItem.storyId, taskItem.id)"
+    >
+      <fa-icon [icon]="faTrash" />
+    </button>
+  </a>
+  } }@else{
+  <div class="empty-list">
+    <h1>brak zadań</h1>
+    <p>Lista jest pusta</p>
+  </div>
+  }
+</div>

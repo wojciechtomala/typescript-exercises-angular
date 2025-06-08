@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { environment } from '../../constants/environment';
 import { User } from '../../models/user.model';
 
@@ -11,14 +11,8 @@ export class UserService {
   private httpClient = inject(HttpClient);
 
   private readonly user: User = {
-    id: 'AC108571',
+    id: 0,
     name: 'Wojciech',
-    surname: 'Tomala',
-  };
-
-  private readonly developer: User = {
-    id: 'AD151512',
-    name: 'Wojtek',
     surname: 'Tomala',
   };
 
@@ -33,6 +27,21 @@ export class UserService {
 
   public getLoggedUser(): Observable<User> {
     return this.loggedInUser$;
+  }
+
+  public getAllUsers(): Observable<User[]> {
+    return of([
+      {
+        id: 1,
+        name: 'Wojtek',
+        surname: 'Tomala',
+      },
+      {
+        id: 2,
+        name: 'Adam',
+        surname: 'Tomala',
+      },
+    ]);
   }
 
   public loginUser(login: string, password: string): Observable<any> {

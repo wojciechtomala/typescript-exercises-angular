@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../constants/environment';
 import { NewProject } from '../../models/newProject.model';
 import { Project } from '../../models/project.model';
+import { generateUniqueId } from '../../helpers/generateUniqueId.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -59,7 +60,7 @@ export class ProjectService {
     console.log(currentProjects);
     const project: Project = {
       ...newProject,
-      id: currentProjects.length,
+      id: generateUniqueId(),
       isSelected: currentProjects.length === 0,
     };
     currentProjects.push(project);

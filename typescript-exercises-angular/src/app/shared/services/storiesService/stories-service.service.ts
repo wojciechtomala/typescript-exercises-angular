@@ -3,6 +3,7 @@ import { ProjectService } from '../projectService/project.service';
 import { NewStory, Story } from '../../models/story.model';
 import { Project } from '../../models/project.model';
 import { environment } from '../../constants/environment';
+import { generateUniqueId } from '../../helpers/generateUniqueId.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -17,9 +18,10 @@ export class StoriesService {
     if (projectIndex === -1) return;
 
     const stories = projects[projectIndex].stories || [];
-    const newId = stories.length
-      ? Math.max(...stories.map((s) => s.id)) + 1
-      : 0;
+    // const newId = stories.length
+    //   ? Math.max(...stories.map((s) => s.id)) + 1
+    //   : 0;
+    const newId = generateUniqueId();
 
     const story: Story = { ...newStory, id: newId };
     stories.push(story);
@@ -47,6 +49,11 @@ export class StoriesService {
     project.stories = project.stories.filter((story) => story.id !== storyId);
 
     this.updateProjects(projects);
+  }
+
+  public getAllStories(): Story[] {
+    const projects = this.projectService.getAllProjects();
+    return projects.flatMap((project) => project.stories);
   }
 
   public getStories(projectId: number): Story[] {

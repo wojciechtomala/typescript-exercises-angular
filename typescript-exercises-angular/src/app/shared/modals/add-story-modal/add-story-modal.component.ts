@@ -76,7 +76,7 @@ export class AddStoryModalComponent implements OnInit {
     this.initAddStoryModalForm();
   }
 
-  private async getUserId(): Promise<string> {
+  private async getUserId(): Promise<number> {
     const loggedInUser = await firstValueFrom(this.userService.loggedInUser$);
     return loggedInUser.id;
   }
@@ -104,6 +104,7 @@ export class AddStoryModalComponent implements OnInit {
         const newStory: NewStory = {
           ...this.addStoryModalForm.value,
           projectId: this.projectId,
+          tasks: [],
         };
         console.log('Submitting Story:', newStory);
         if (typeof this.projectId === 'number') {

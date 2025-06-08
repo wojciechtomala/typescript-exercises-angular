@@ -85,7 +85,7 @@ export class EditStoryModalComponent implements OnInit {
     this.getFormValuesByStoryId();
   }
 
-  private async getUserId(): Promise<string> {
+  private async getUserId(): Promise<number> {
     const loggedInUser = await firstValueFrom(this.userService.loggedInUser$);
     return loggedInUser.id;
   }

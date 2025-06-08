@@ -11,6 +11,9 @@ import { AddStoryModalComponent } from '../../../shared/modals/add-story-modal/a
 import { MatButtonModule } from '@angular/material/button';
 import { EditStoryModalComponent } from '../../../shared/modals/edit-story-modal/edit-story-modal.component';
 import { statuses } from '../../../shared/constants/constants';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { StoriesService } from '../../../shared/services/storiesService/stories-service.service';
 
 type StatusSelect = Status | 'All';
 
@@ -21,11 +24,14 @@ type StatusSelect = Status | 'All';
     MatSelectModule,
     ReactiveFormsModule,
     MatButtonModule,
+    FontAwesomeModule,
   ],
   templateUrl: './project-details-page.component.html',
   styleUrl: './project-details-page.component.scss',
 })
 export class ProjectDetailsPageComponent implements OnInit {
+  public readonly faTrash = faTrash;
+
   public storyStatuses: StatusSelect[] = statuses;
 
   private routeId!: number;
@@ -42,7 +48,8 @@ export class ProjectDetailsPageComponent implements OnInit {
     private projectService: ProjectService,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private storiesService: StoriesService
   ) {
     this.routeId = +this.activatedRoute.snapshot.params['id'];
     this.storiesFilterForm = this.formBuilder.group({
@@ -78,6 +85,12 @@ export class ProjectDetailsPageComponent implements OnInit {
     } else {
       alert('No project data found');
     }
+  }
+
+  public deleteStory(e: Event, clickedStoryId: number): void {
+    e.stopPropagation();
+    this.storiesService.deleteStory(this.projectDetails.id, clickedStoryId);
+    this.fetchProjectDetails();
   }
 
   public onAddStoryClick(): void {

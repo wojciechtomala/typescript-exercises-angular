@@ -6,7 +6,7 @@
     <div class="row grid-1">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nazwa historyjki</mat-label>
-        <input matInput formControlName="name" placeholder="Story name" />
+        <input matInput formControlName="name" placeholder="Nazwa historyjki" />
         @if (addStoryModalForm.get('name')?.hasError('required')) {
         <mat-error> Nazwa historyjki jest wymagana </mat-error>
         }
