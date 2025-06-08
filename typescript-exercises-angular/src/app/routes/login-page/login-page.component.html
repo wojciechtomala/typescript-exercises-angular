@@ -1,1 +1,16 @@
-<p>login-page works!</p>
+<div class="login-page-wrapper">
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
+    <h1>Logowanie</h1>
+    <mat-form-field appearance="outline">
+      <mat-label>Login</mat-label>
+      <input matInput formControlName="login" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Hasło</mat-label>
+      <input type="password" matInput formControlName="password" />
+    </mat-form-field>
+
+    <button mat-raised-button type="submit">Zaloguj się</button>
+  </form>
+</div>

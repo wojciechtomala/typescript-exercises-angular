@@ -3,14 +3,19 @@ import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { environment } from '../../constants/environment';
 import { User } from '../../models/user.model';
+import { AuthService } from '../authService/auth.service';
+import { UserDataResponse } from '../../models/userDataResponse.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
+  private readonly api = 'http://localhost:3000';
   private httpClient = inject(HttpClient);
 
-  private readonly user: User = {
+  private isUserLoggedIn: boolean = false;
+
+  private user: User = {
     id: 0,
     name: 'Wojciech',
     surname: 'Tomala',
@@ -23,7 +28,29 @@ export class UserService {
   public readonly loggedInUser$: Observable<User> =
     this._loggedInUser.asObservable();
 
-  constructor() {}
+  constructor(private authService: AuthService) {
+    this.subsctibeUserLoggedInStatus();
+  }
+
+  private subsctibeUserLoggedInStatus(): void {
+    this.authService.isUserLoggedIn$.subscribe((isUserLoggedIn) => {
+      if (this.isUserLoggedIn === isUserLoggedIn) return;
+      this.isUserLoggedIn = isUserLoggedIn;
+      this.fetchUserData();
+    });
+  }
+
+  private fetchUserData(): void {
+    this.httpClient.get<UserDataResponse>(`${this.api}/me`).subscribe({
+      next: (userDataResponse) => {
+        this.user = {
+          id: +userDataResponse.id,
+          name: userDataResponse.name,
+          surname: userDataResponse.surname,
+        };
+      },
+    });
+  }
 
   public getLoggedUser(): Observable<User> {
     return this.loggedInUser$;
@@ -42,13 +69,5 @@ export class UserService {
         surname: 'Tomala',
       },
     ]);
-  }
-
-  public loginUser(login: string, password: string): Observable<any> {
-    const payload = {
-      login,
-      password,
-    };
-    return this.httpClient.post(`${environment.apiURL}/login`, payload);
   }
 }
