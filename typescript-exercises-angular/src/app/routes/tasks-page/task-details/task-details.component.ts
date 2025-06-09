@@ -34,9 +34,9 @@ import { User } from '../../../shared/models/user.model';
   styleUrl: './task-details.component.scss',
 })
 export class TaskDetailsComponent implements OnInit {
-  public storyId: number | null = null;
+  public storyId: string | null = null;
 
-  public taskId: number | null = null;
+  public taskId: string | null = null;
 
   public task!: Task;
 
@@ -59,11 +59,13 @@ export class TaskDetailsComponent implements OnInit {
     this.subscribeForTaskDetailsFormValueChange();
   }
 
-  public getUserNameById(userId: number): string {
+  public getUserNameById(userId: string): string {
     if (this.usersToSelect) {
-      const user = this.usersToSelect.findIndex((user) => user.id === userId);
-      if (typeof user === 'number' && user !== -1) {
-        return `${this.usersToSelect[user].name} ${this.usersToSelect[user].surname}`;
+      const userIndex = this.usersToSelect.findIndex(
+        (user) => user._id === userId
+      );
+      if (typeof userIndex === 'number' && userIndex !== -1) {
+        return `${this.usersToSelect[userIndex].name} ${this.usersToSelect[userIndex].surname}`;
       } else {
         return 'Nieprzypisane';
       }
@@ -74,11 +76,11 @@ export class TaskDetailsComponent implements OnInit {
 
   private subscribeForTaskDetailsFormValueChange(): void {
     this.taskDetailsForm.valueChanges.subscribe(() => {
-      const assignedUserId: number | string =
+      const assignedUserId =
         this.taskDetailsForm.controls['assignedUser'].value;
-      if (typeof assignedUserId === 'number' && this.storyId) {
+      if (assignedUserId && this.storyId) {
         const updatedTask: Task = {
-          id: this.task.id,
+          _id: this.task._id,
           storyId: this.task.storyId,
           title: this.task.title,
           description: this.task.description,
@@ -88,11 +90,24 @@ export class TaskDetailsComponent implements OnInit {
           state: 'Doing',
           startDate: new Date().toISOString().substring(0, 10),
         };
-        this.taskService.updateTask(this.storyId, updatedTask);
-        this.fetchTaskDetails();
+        this.taskService.updateTask(updatedTask).subscribe({
+          next: () => {
+            this.fetchTaskDetails();
+            this.snackBar.open(
+              'Przypisana osoba zaktualizowana pomyślnie',
+              'Zamknij',
+              {
+                duration: 3000,
+              }
+            );
+          },
+          error: (error) => {
+            console.error(error);
+          },
+        });
       } else if (typeof assignedUserId !== 'number' && this.storyId) {
         const updatedTask: Task = {
-          id: this.task.id,
+          _id: this.task._id,
           storyId: this.task.storyId,
           title: this.task.title,
           description: this.task.description,
@@ -100,8 +115,21 @@ export class TaskDetailsComponent implements OnInit {
           createdAt: this.task.createdAt,
           state: 'Todo',
         };
-        this.taskService.updateTask(this.storyId, updatedTask);
-        this.fetchTaskDetails();
+        this.taskService.updateTask(updatedTask).subscribe({
+          next: () => {
+            this.fetchTaskDetails();
+            this.snackBar.open(
+              'Przypisana osoba zaktualizowana pomyślnie',
+              'Zamknij',
+              {
+                duration: 3000,
+              }
+            );
+          },
+          error: (error) => {
+            console.error(error);
+          },
+        });
       }
     });
   }
@@ -117,7 +145,7 @@ export class TaskDetailsComponent implements OnInit {
   public endTask(): void {
     if (this.task.state === 'Doing' && this.storyId) {
       const updatedTask: Task = {
-        id: this.task.id,
+        _id: this.task._id,
         storyId: this.task.storyId,
         title: this.task.title,
         description: this.task.description,
@@ -128,7 +156,16 @@ export class TaskDetailsComponent implements OnInit {
         startDate: this.task.startDate,
         endDate: new Date().toISOString().substring(0, 10),
       };
-      this.taskService.updateTask(this.storyId, updatedTask);
+      this.taskService.updateTask(updatedTask).subscribe({
+        next: () => {
+          this.snackBar.open('Zadanie zakończone pomyślnie', 'Zakończ', {
+            duration: 3000,
+          });
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
       this.fetchTaskDetails();
     } else {
       this.snackBar.open(
@@ -142,23 +179,27 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.storyId = +this.route.snapshot.params['storyId'];
-    this.taskId = +this.route.snapshot.params['taskId'];
+    this.storyId = this.route.snapshot.params['storyId'];
+    this.taskId = this.route.snapshot.params['taskId'];
     this.fetchTaskDetails();
   }
 
   private fetchTaskDetails(): void {
-    if (typeof this.storyId === 'number' && typeof this.taskId === 'number') {
-      const taskDetails = this.taskService.getTask(this.storyId, this.taskId);
-      if (taskDetails) {
-        this.task = taskDetails;
-        this.taskDetailsForm.patchValue(
-          {
-            assignedUser: this.task.state === 'Doing' ? this.task.userId : '',
-          },
-          { emitEvent: false }
-        );
-      }
+    if (this.storyId && this.taskId) {
+      this.taskService.getTask(this.taskId).subscribe({
+        next: (taskDetails: Task) => {
+          this.task = taskDetails;
+          this.taskDetailsForm.patchValue(
+            {
+              assignedUser: this.task.state === 'Doing' ? this.task.userId : '',
+            },
+            { emitEvent: false }
+          );
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
     } else {
       this.snackBar.open('Wystąpił błąd', 'Zamknij', {
         duration: 3000,

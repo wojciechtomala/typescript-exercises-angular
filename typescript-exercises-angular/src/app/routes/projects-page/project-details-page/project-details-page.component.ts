@@ -14,6 +14,8 @@ import { statuses } from '../../../shared/constants/constants';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { StoriesService } from '../../../shared/services/storiesService/stories-service.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CommonModule } from '@angular/common';
 
 type StatusSelect = Status | 'All';
 
@@ -25,6 +27,7 @@ type StatusSelect = Status | 'All';
     ReactiveFormsModule,
     MatButtonModule,
     FontAwesomeModule,
+    CommonModule,
   ],
   templateUrl: './project-details-page.component.html',
   styleUrl: './project-details-page.component.scss',
@@ -34,7 +37,7 @@ export class ProjectDetailsPageComponent implements OnInit {
 
   public storyStatuses: StatusSelect[] = statuses;
 
-  private routeId!: number;
+  private routeId!: string;
 
   public projectDetails!: Project;
 
@@ -49,9 +52,10 @@ export class ProjectDetailsPageComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
-    private storiesService: StoriesService
+    private storiesService: StoriesService,
+    private snackBar: MatSnackBar
   ) {
-    this.routeId = +this.activatedRoute.snapshot.params['id'];
+    this.routeId = this.activatedRoute.snapshot.params['id'];
     this.storiesFilterForm = this.formBuilder.group({
       status: ['All', []],
     });
@@ -78,26 +82,41 @@ export class ProjectDetailsPageComponent implements OnInit {
   }
 
   private fetchProjectDetails(): void {
-    const projectData = this.projectService.getProjectById(this.routeId);
-    if (projectData) {
-      this.projectDetails = projectData;
-      this.filteredStories = this.projectDetails.stories;
-    } else {
-      alert('No project data found');
-    }
+    this.projectService.getProject(this.routeId).subscribe({
+      next: (projectDetailsResponse: Project) => {
+        if (projectDetailsResponse) {
+          this.projectDetails = projectDetailsResponse;
+          this.applyFilter('All');
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 
-  public deleteStory(e: Event, clickedStoryId: number): void {
+  public deleteStory(e: Event, clickedStoryId: string): void {
     e.stopPropagation();
-    this.storiesService.deleteStory(this.projectDetails.id, clickedStoryId);
-    this.fetchProjectDetails();
+    this.storiesService.deleteStory(clickedStoryId).subscribe({
+      next: () => {
+        this.snackBar.open('Historyjka została usunięta', 'Zamknij', {
+          duration: 3000,
+        });
+      },
+      error: (error) => {
+        console.error(error);
+      },
+      complete: () => {
+        this.fetchProjectDetails();
+      },
+    });
   }
 
   public onAddStoryClick(): void {
     const dialogRef = this.dialog.open(AddStoryModalComponent, {
       width: '620px',
       data: {
-        projectId: this.projectDetails.id,
+        projectId: this.projectDetails._id,
       },
     });
 
@@ -106,11 +125,11 @@ export class ProjectDetailsPageComponent implements OnInit {
     });
   }
 
-  public onEditStoryClick(storyId: number): void {
+  public onEditStoryClick(storyId: string): void {
     const dialogRef = this.dialog.open(EditStoryModalComponent, {
       width: '620px',
       data: {
-        projectId: this.projectDetails.id,
+        projectId: this.projectDetails._id,
         storyId: storyId,
       },
     });

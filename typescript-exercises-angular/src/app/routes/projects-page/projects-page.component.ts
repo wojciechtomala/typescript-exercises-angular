@@ -7,6 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faInbox, faThumbtack } from '@fortawesome/free-solid-svg-icons';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-projects-page',
@@ -29,25 +30,44 @@ export class ProjectsPageComponent implements OnInit {
 
   private projectService = inject(ProjectService);
 
-  constructor() {}
+  constructor(private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.fetchProjects();
   }
 
   private fetchProjects(): void {
-    this.projects = this.projectService.getAllProjects();
+    this.projectService
+      .getProjects()
+      .subscribe((projectsResponse: Project[]) => {
+        this.projects = projectsResponse;
+      });
   }
 
-  public onSelectProject(e: Event, projectId: number): void {
+  public onSelectProject(e: Event, projectId: string): void {
     e.stopPropagation();
-    this.projectService.setSelectedProject(projectId);
-    this.fetchProjects();
+    this.projectService.setSelectedProject(projectId).subscribe({
+      next: () => {
+        this.snackBar.open('Zaktualizowano projekt domyślny', 'Zamknij', {
+          duration: 3000,
+        });
+        this.fetchProjects();
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 
-  public onDeleteProject(e: Event, projectId: number): void {
+  public onDeleteProject(e: Event, projectId: string): void {
     e.stopPropagation();
-    this.projectService.deleteProjectFromLocalStorage(projectId);
-    this.fetchProjects();
+    this.projectService.deleteProject(projectId).subscribe({
+      next: () => {
+        this.fetchProjects();
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 }

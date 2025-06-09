@@ -13,17 +13,19 @@
 </div>
 <div class="filters-container">
   <form [formGroup]="taskFiltersForm">
+    @if(stories && stories.length){
     <mat-form-field appearance="outline">
       <mat-label>Wybierz historyjkę</mat-label>
       @if(stories.length){
       <mat-select formControlName="storyId" (selectionChange)="fetchTasks()">
         <mat-option [value]="null">Wszystkie</mat-option>
         @for (storyItem of stories; track $index) {
-        <mat-option [value]="storyItem.id">{{ storyItem.name }}</mat-option>
+        <mat-option [value]="storyItem._id">{{ storyItem.name }}</mat-option>
         }
       </mat-select>
       }
     </mat-form-field>
+    }
   </form>
 </div>
 <div class="tasks-container">
@@ -31,7 +33,7 @@
   <a class="task-item">
     <div
       class="task-item-main-content"
-      [routerLink]="['/task-details', taskItem.storyId, taskItem.id]"
+      [routerLink]="['/task-details', taskItem.storyId, taskItem._id]"
     >
       <h3>
         {{ i + 1 + ". " + taskItem.title }}
@@ -42,10 +44,7 @@
     <div class="task-item-more-content">
       <p>{{ taskItem.createdAt }}</p>
     </div>
-    <button
-      mat-icon-button
-      (click)="deleteTask($event, taskItem.storyId, taskItem.id)"
-    >
+    <button mat-icon-button (click)="deleteTask($event, taskItem._id)">
       <fa-icon [icon]="faTrash" />
     </button>
   </a>

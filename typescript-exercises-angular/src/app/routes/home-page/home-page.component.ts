@@ -33,8 +33,10 @@ export class HomePageComponent implements OnInit {
 
   private fetchLoggedUserData(): void {
     this.userService.getLoggedUser().subscribe({
-      next: (loggedUserData: User) => {
-        this.user = loggedUserData;
+      next: (loggedUserData: User | null) => {
+        if (loggedUserData) {
+          this.user = loggedUserData;
+        }
       },
       error: (error) => {
         console.error(error);
@@ -43,9 +45,15 @@ export class HomePageComponent implements OnInit {
   }
 
   private fetchSelectedProjectData(): void {
-    const selectedProject = this.projectService.getSelectedProject();
-    if (selectedProject) {
-      this.selectedProject = selectedProject;
-    }
+    this.projectService.getProjects().subscribe({
+      next: (projectsResponse: Project[]) => {
+        const selectedProject = projectsResponse.find(
+          (project) => project.isSelected
+        );
+        if (selectedProject) {
+          this.selectedProject = selectedProject;
+        }
+      },
+    });
   }
 }

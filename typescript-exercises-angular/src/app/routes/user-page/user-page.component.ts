@@ -32,8 +32,10 @@ export class UserPageComponent implements OnInit {
   }
 
   public async fetchUserInfo(): Promise<void> {
-    this.user = await firstValueFrom(this.userService.loggedInUser$);
-    if (!this.user) {
+    const userData = await firstValueFrom(this.userService.loggedInUser$);
+    if (userData) {
+      this.user = userData;
+    } else {
       this.router.navigate(['/']);
     }
   }

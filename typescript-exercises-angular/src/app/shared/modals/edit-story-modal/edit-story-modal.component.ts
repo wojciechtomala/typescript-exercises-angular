@@ -28,8 +28,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { StoriesService } from '../../services/storiesService/stories-service.service';
 
 interface ModalData {
-  projectId: number;
-  storyId: number;
+  projectId: string;
+  storyId: string;
 }
 @Component({
   selector: 'app-edit-story-modal',
@@ -51,9 +51,9 @@ interface ModalData {
   styleUrl: './edit-story-modal.component.scss',
 })
 export class EditStoryModalComponent implements OnInit {
-  private projectId: number | null;
+  private projectId: string | null;
 
-  private storyId: number | null;
+  private storyId: string | null;
 
   public editStoryModalForm!: FormGroup;
 
@@ -71,10 +71,7 @@ export class EditStoryModalComponent implements OnInit {
   ) {
     this.projectId = this.matDialogData.projectId;
     this.storyId = this.matDialogData.storyId;
-    if (
-      typeof this.projectId !== 'number' ||
-      typeof this.storyId !== 'number'
-    ) {
+    if (!this.projectId || !this.storyId) {
       this.dialogRef.close();
     }
   }
@@ -85,9 +82,9 @@ export class EditStoryModalComponent implements OnInit {
     this.getFormValuesByStoryId();
   }
 
-  private async getUserId(): Promise<number> {
+  private async getUserId(): Promise<string | null> {
     const loggedInUser = await firstValueFrom(this.userService.loggedInUser$);
-    return loggedInUser.id;
+    return loggedInUser ? loggedInUser._id : null;
   }
 
   private initEditStoryModalForm(): void {
@@ -102,13 +99,15 @@ export class EditStoryModalComponent implements OnInit {
   }
 
   private getFormValuesByStoryId(): void {
-    if (typeof this.storyId === 'number') {
-      console.log(this.storyId);
-      const story = this.storiesService.getStory(this.storyId);
-      if (story) {
-        console.log(story);
-        this.editStoryModalForm.patchValue(story);
-      }
+    if (this.storyId) {
+      this.storiesService.getStory(this.storyId).subscribe({
+        next: (storyData: Story) => {
+          this.editStoryModalForm.patchValue(storyData);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
     }
   }
 
@@ -124,13 +123,19 @@ export class EditStoryModalComponent implements OnInit {
         const updatedStory: Story = {
           ...this.editStoryModalForm.value,
           projectId: this.projectId,
-          id: this.storyId,
+          _id: this.storyId,
         };
         console.log('Submitting Story:', updatedStory);
-        if (typeof this.projectId === 'number') {
-          this.storiesService.updateStory(this.projectId, updatedStory);
-          this._snackBar.open('Sukces: zedytowano historyjkę', 'Zamknij', {
-            duration: 3000,
+        if (this.projectId) {
+          this.storiesService.updateStory(updatedStory).subscribe({
+            next: () => {
+              this._snackBar.open('Sukces: zedytowano historyjkę', 'Zamknij', {
+                duration: 3000,
+              });
+            },
+            error: (error) => {
+              console.error(error);
+            },
           });
         } else {
           this._snackBar.open('Wystąpił błąd: Brak id projektu', 'Zamknij', {

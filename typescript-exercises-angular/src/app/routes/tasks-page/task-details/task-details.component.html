@@ -1,3 +1,4 @@
+@if(task && usersToSelect){
 <div class="task-details-header">
   <h1>Szczegóły historyjki: {{ task.title }}</h1>
   <p>Data utworzenia: {{ task.createdAt }}</p>
@@ -40,7 +41,7 @@
         <mat-select formControlName="assignedUser">
           <mat-option value="">Nieprzypisane</mat-option>
           @for (user of usersToSelect; track $index) {
-          <mat-option [value]="user.id"
+          <mat-option [value]="user._id"
             >{{ user.name }} {{ user.surname }}</mat-option
           >
           }
@@ -57,6 +58,13 @@
     >
       Zakończ
     </button>
-    }@else{ Zadanie zakończone }
+    }@else{
+    <p style="text-align: center">
+      Zadanie zakończone - Przypisz nową osobę aby cofnąć status zadania do
+      Doing
+    </p>
+    }
   </div>
 </div>
+
+}

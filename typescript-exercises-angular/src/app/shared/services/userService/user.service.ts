@@ -15,17 +15,10 @@ export class UserService {
 
   private isUserLoggedIn: boolean = false;
 
-  private user: User = {
-    id: 0,
-    name: 'Wojciech',
-    surname: 'Tomala',
-  };
+  private _loggedInUser: BehaviorSubject<User | null> =
+    new BehaviorSubject<User | null>(null);
 
-  private _loggedInUser: BehaviorSubject<User> = new BehaviorSubject<User>(
-    this.user
-  );
-
-  public readonly loggedInUser$: Observable<User> =
+  public readonly loggedInUser$: Observable<User | null> =
     this._loggedInUser.asObservable();
 
   constructor(private authService: AuthService) {
@@ -43,31 +36,20 @@ export class UserService {
   private fetchUserData(): void {
     this.httpClient.get<UserDataResponse>(`${this.api}/me`).subscribe({
       next: (userDataResponse) => {
-        this.user = {
-          id: +userDataResponse.id,
+        this._loggedInUser.next({
+          _id: userDataResponse._id,
           name: userDataResponse.name,
           surname: userDataResponse.surname,
-        };
+        });
       },
     });
   }
 
-  public getLoggedUser(): Observable<User> {
+  public getLoggedUser(): Observable<User | null> {
     return this.loggedInUser$;
   }
 
   public getAllUsers(): Observable<User[]> {
-    return of([
-      {
-        id: 1,
-        name: 'Wojtek',
-        surname: 'Tomala',
-      },
-      {
-        id: 2,
-        name: 'Adam',
-        surname: 'Tomala',
-      },
-    ]);
+    return this.httpClient.get<User[]>(`${this.api}/users`);
   }
 }

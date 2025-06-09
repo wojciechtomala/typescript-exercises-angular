@@ -28,7 +28,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { StoriesService } from '../../services/storiesService/stories-service.service';
 
 interface ModalData {
-  projectId: number;
+  projectId: string;
 }
 @Component({
   selector: 'app-add-story-modal',
@@ -50,7 +50,7 @@ interface ModalData {
   styleUrl: './add-story-modal.component.scss',
 })
 export class AddStoryModalComponent implements OnInit {
-  private projectId: number | null;
+  private projectId: string | null;
 
   public addStoryModalForm!: FormGroup;
 
@@ -67,7 +67,7 @@ export class AddStoryModalComponent implements OnInit {
     private storiesService: StoriesService
   ) {
     this.projectId = this.matDialogData.projectId;
-    if (typeof this.projectId !== 'number') {
+    if (!this.projectId) {
       this.dialogRef.close();
     }
   }
@@ -76,9 +76,9 @@ export class AddStoryModalComponent implements OnInit {
     this.initAddStoryModalForm();
   }
 
-  private async getUserId(): Promise<number> {
+  private async getUserId(): Promise<string | null> {
     const loggedInUser = await firstValueFrom(this.userService.loggedInUser$);
-    return loggedInUser.id;
+    return loggedInUser ? loggedInUser._id : null;
   }
 
   private initAddStoryModalForm(): void {
@@ -107,10 +107,22 @@ export class AddStoryModalComponent implements OnInit {
           tasks: [],
         };
         console.log('Submitting Story:', newStory);
-        if (typeof this.projectId === 'number') {
-          this.storiesService.createStory(this.projectId, newStory);
-          this._snackBar.open('Sukces: utworzono nową historyjkę', 'Zamknij', {
-            duration: 3000,
+        if (this.projectId) {
+          this.storiesService.createStory(newStory).subscribe({
+            next: () => {
+              this._snackBar.open(
+                'Sukces: utworzono nową historyjkę',
+                'Zamknij',
+                {
+                  duration: 3000,
+                }
+              );
+            },
+            error: (error) => {
+              this._snackBar.open(error, 'Zamknij', {
+                duration: 3000,
+              });
+            },
           });
         } else {
           this._snackBar.open('Wystąpił błąd: Brak id projektu', 'Zamknij', {

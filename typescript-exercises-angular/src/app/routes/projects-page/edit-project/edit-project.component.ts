@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Project } from '../../../shared/models/project.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-project',
@@ -35,8 +36,8 @@ export class EditProjectComponent implements OnInit {
 
   private activatedRoute = inject(ActivatedRoute);
 
-  private projectId: number | null =
-    +this.activatedRoute.snapshot.paramMap.get('projectId')!;
+  private projectId: string | null =
+    this.activatedRoute.snapshot.paramMap.get('projectId')!;
 
   public comments: string | Comment[] = '198251298591825';
 
@@ -48,7 +49,7 @@ export class EditProjectComponent implements OnInit {
     maxAssignedUsers: [1, Validators.required],
   });
 
-  constructor() {
+  constructor(private snackBar: MatSnackBar) {
     this.getProjectId();
   }
 
@@ -67,24 +68,23 @@ export class EditProjectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (typeof this.projectId === 'number') {
-      const project = this.projectService.getProjectById(this.projectId);
-      if (project) {
-        this.editProjectForm.patchValue({
-          name: project.name,
-          description: project.description,
-          createdAt: project.createdAt,
-          endDate: project.endDate,
-          maxAssignedUsers: project.maxAssignedUsers,
-        });
-      }
+    if (this.projectId) {
+      this.projectService.getProject(this.projectId).subscribe({
+        next: (projectDetailsResponse: any) => {
+          this.editProjectForm.patchValue({
+            name: projectDetailsResponse.name,
+            description: projectDetailsResponse.description,
+            createdAt: projectDetailsResponse.createdAt,
+            endDate: projectDetailsResponse.endDate,
+            maxAssignedUsers: projectDetailsResponse.maxAssignedUsers,
+          });
+        },
+      });
     }
   }
 
   public onSubmit(): void {
-    console.log('eo');
     if (this.editProjectForm.valid) {
-      console.log('eo1');
       const newProject: NewProject = {
         name: this.editProjectForm.controls.name.value || '',
         description: this.editProjectForm.controls.description.value || '',
@@ -94,11 +94,40 @@ export class EditProjectComponent implements OnInit {
           this.editProjectForm.controls.maxAssignedUsers.value || 1,
         stories: [],
       };
-      if (typeof this.projectId === 'number') {
-        const updatedProject = { ...newProject, id: this.projectId } as Project;
-        this.projectService.updateProject(updatedProject);
+      if (this.projectId) {
+        const updatedProject = {
+          ...newProject,
+          _id: this.projectId,
+        } as Project;
+        this.projectService.updateProject(updatedProject).subscribe({
+          next: () => {
+            this.snackBar.open(
+              'Projekt został zaktualizowany pomyślnie',
+              'Zamknij',
+              {
+                duration: 3000,
+              }
+            );
+          },
+          error: (error) => {
+            console.error(error);
+          },
+        });
       } else {
-        this.projectService.createNewLocalStorageProject(newProject);
+        this.projectService.createProject(newProject).subscribe({
+          next: () => {
+            this.snackBar.open(
+              'Projekt został utworzony pomyślnie',
+              'Zamknij',
+              {
+                duration: 3000,
+              }
+            );
+          },
+          error: (error) => {
+            console.error(error);
+          },
+        });
       }
       this.router.navigate(['/projects']);
     }

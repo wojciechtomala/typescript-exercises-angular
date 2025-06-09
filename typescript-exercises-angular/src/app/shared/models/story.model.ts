@@ -16,5 +16,5 @@ export interface NewStory {
 }
 
 export interface Story extends NewStory {
-  id: number;
+  _id: string;
 }

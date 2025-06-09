@@ -10,110 +10,127 @@ import { generateUniqueId } from '../../helpers/generateUniqueId.helper';
   providedIn: 'root',
 })
 export class ProjectService {
-  private _projects: BehaviorSubject<Project[]> = new BehaviorSubject<
-    Project[]
-  >([]);
+  // private _projects: BehaviorSubject<Project[]> = new BehaviorSubject<
+  //   Project[]
+  // >([]);
 
-  public readonly projects$: Observable<Project[]> =
-    this._projects.asObservable();
+  // public readonly projects$: Observable<Project[]> =
+  //   this._projects.asObservable();
 
   constructor(private _httpClient: HttpClient) {
-    this.getProjectsFromLocalStorage();
+    // this.getProjectsFromLocalStorage();
   }
 
-  public getProjectsFromLocalStorage(): void {
-    const currentProjects = localStorage.getItem(
-      environment.localStorageProjectsKey
-    );
-    this._projects.next(currentProjects ? JSON.parse(currentProjects) : []);
-  }
+  // public getProjectsFromLocalStorage(): void {
+  //   const currentProjects = localStorage.getItem(
+  //     environment.localStorageProjectsKey
+  //   );
+  //   this._projects.next(currentProjects ? JSON.parse(currentProjects) : []);
+  // }
 
-  public getAllProjects(): Project[] {
-    return this._projects.getValue();
-  }
+  // public getAllProjects(): Project[] {
+  //   return this._projects.getValue();
+  // }
 
-  public setSelectedProject(projectId: number): void {
-    const currentProjects = this.getAllProjects().map((project) => ({
-      ...project,
-      isSelected: project.id === projectId,
-    }));
-    localStorage.setItem(
-      environment.localStorageProjectsKey,
-      JSON.stringify(currentProjects)
-    );
-    this._projects.next(currentProjects);
-  }
+  // public setSelectedProject(projectId: number): void {
+  //   const currentProjects = this.getAllProjects().map((project) => ({
+  //     ...project,
+  //     isSelected: project.id === projectId,
+  //   }));
+  //   localStorage.setItem(
+  //     environment.localStorageProjectsKey,
+  //     JSON.stringify(currentProjects)
+  //   );
+  //   this._projects.next(currentProjects);
+  // }
 
-  public getSelectedProject(): Project | undefined {
-    const currentProjects = this.getAllProjects();
-    return currentProjects.find((project) => project.isSelected);
-  }
+  // public getSelectedProject(): Project | undefined {
+  //   const currentProjects = this.getAllProjects();
+  //   return currentProjects.find((project) => project.isSelected);
+  // }
 
-  public getProjectById(id: number): Project | undefined {
-    const projects = this._projects.getValue();
-    return projects.find((project) => project.id === id);
-  }
+  // public getProjectById(id: number): Project | undefined {
+  //   const projects = this._projects.getValue();
+  //   return projects.find((project) => project.id === id);
+  // }
 
-  public createNewLocalStorageProject(newProject: NewProject): void {
-    console.log(newProject);
-    const currentProjects = this.getAllProjects();
-    console.log(currentProjects);
-    const project: Project = {
-      ...newProject,
-      id: generateUniqueId(),
-      isSelected: currentProjects.length === 0,
-    };
-    currentProjects.push(project);
-    localStorage.setItem(
-      environment.localStorageProjectsKey,
-      JSON.stringify(currentProjects)
-    );
-    this.getProjectsFromLocalStorage();
-  }
+  // public createNewLocalStorageProject(newProject: NewProject): void {
+  //   console.log(newProject);
+  //   const currentProjects = this.getAllProjects();
+  //   console.log(currentProjects);
+  //   const project: Project = {
+  //     ...newProject,
+  //     id: generateUniqueId(),
+  //     isSelected: currentProjects.length === 0,
+  //   };
+  //   currentProjects.push(project);
+  //   localStorage.setItem(
+  //     environment.localStorageProjectsKey,
+  //     JSON.stringify(currentProjects)
+  //   );
+  //   this.getProjectsFromLocalStorage();
+  // }
 
-  public updateProject(updatedProject: Project): void {
-    const currentProjects = this.getAllProjects().map((project) => {
-      if (project.id === updatedProject.id) {
-        return updatedProject;
-      }
-      return project;
-    });
-    localStorage.setItem(
-      environment.localStorageProjectsKey,
-      JSON.stringify(currentProjects)
-    );
-    this._projects.next(currentProjects);
-  }
+  // public updateProject(updatedProject: Project): void {
+  //   const currentProjects = this.getAllProjects().map((project) => {
+  //     if (project.id === updatedProject.id) {
+  //       return updatedProject;
+  //     }
+  //     return project;
+  //   });
+  //   localStorage.setItem(
+  //     environment.localStorageProjectsKey,
+  //     JSON.stringify(currentProjects)
+  //   );
+  //   this._projects.next(currentProjects);
+  // }
 
-  public deleteProjectFromLocalStorage(id: number): void {
-    const currentProjects = this.getAllProjects().filter(
-      (project) => project.id !== id
-    );
-    localStorage.setItem(
-      environment.localStorageProjectsKey,
-      JSON.stringify(currentProjects)
-    );
-    this.getProjectsFromLocalStorage();
-  }
+  // public deleteProjectFromLocalStorage(id: number): void {
+  //   const currentProjects = this.getAllProjects().filter(
+  //     (project) => project.id !== id
+  //   );
+  //   localStorage.setItem(
+  //     environment.localStorageProjectsKey,
+  //     JSON.stringify(currentProjects)
+  //   );
+  //   this.getProjectsFromLocalStorage();
+  // }
 
   // HTTPCLIENT:
-  // public createProject(newProject: NewProject) : Observable<any> {
-  //   return this._httpClient.post(`${environment.apiURL}/create-project`, newProject);
-  // }
+  public createProject(newProject: NewProject): Observable<any> {
+    return this._httpClient.post(
+      `${environment.apiURL}/create-project`,
+      newProject
+    );
+  } // DONE
 
-  // public updateProject(project: Project) : Observable<any> {
-  //   return this._httpClient.put(`${environment.apiURL}/update-project`, project);
-  // }
+  public updateProject(project: Project): Observable<any> {
+    return this._httpClient.put(
+      `${environment.apiURL}/update-project`,
+      project
+    );
+  } // DONE
 
-  // public deleteProject(projectId: string) : Observable<any> {
-  //   return this._httpClient.delete(`${environment.apiURL}/delete-project/${projectId}`);
-  // }
+  public deleteProject(projectId: string): Observable<any> {
+    return this._httpClient.delete(
+      `${environment.apiURL}/delete-project/${projectId}`
+    );
+  } // DONE
 
-  // public getProjects() : Observable<Project[]> {
-  //   return this._httpClient.get<Project[]>(`${environment.apiURL}/projects`);
-  // }
+  public getProjects(): Observable<Project[]> {
+    return this._httpClient.get<Project[]>(`${environment.apiURL}/projects`);
+  } // DONE
 
-  // public getProject(projectId: string) : Observable<Project> {
-  //   return this._httpClient.get<Project>(`${environment.apiURL}/project/${projectId}`);
-  // }
+  public getProject(projectId: string): Observable<Project> {
+    return this._httpClient.get<Project>(
+      `${environment.apiURL}/project/${projectId}`
+    );
+  } // DONE
+
+  public setSelectedProject(projectId: string): Observable<any> {
+    return this._httpClient.put<any>(
+      `${environment.apiURL}/set-selected-project/${projectId}`,
+      {}
+    );
+  } // DONE
 }

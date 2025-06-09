@@ -8,10 +8,10 @@
   </button>
 </div>
 <div class="projects-container">
-  @if(projects.length){ @for (project of projects; track project.id; let i =
+  @if(projects.length){ @for (project of projects; track project._id; let i =
   $index) {
   <div class="project-item" [class.selected]="project.isSelected">
-    <a [routerLink]="'/project/' + project.id">
+    <a [routerLink]="'/project/' + project._id">
       <h6>
         <span>{{ i + 1 }}.</span> {{ project.name }}
         @if(project.isSelected) {
@@ -23,16 +23,16 @@
       <button
         [matTooltip]="project.isSelected ? 'Domyślny' : 'Ustaw jako domyślny'"
         [class.selected]="project.isSelected"
-        (click)="!project.isSelected && onSelectProject($event, project.id)"
+        (click)="!project.isSelected && onSelectProject($event, project._id)"
       >
         <mat-icon>power_settings_new</mat-icon>
       </button>
-      <button matTooltip="Edytuj" [routerLink]="'/edit-project/' + project.id">
+      <button matTooltip="Edytuj" [routerLink]="'/edit-project/' + project._id">
         <mat-icon>edit</mat-icon>
       </button>
       <button
         matTooltip="Usuń projekt"
-        (click)="onDeleteProject($event, project.id)"
+        (click)="onDeleteProject($event, project._id)"
       >
         <mat-icon>restore_from_trash</mat-icon>
       </button>

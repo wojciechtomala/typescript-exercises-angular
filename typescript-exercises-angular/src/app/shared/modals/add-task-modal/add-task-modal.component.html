@@ -52,8 +52,8 @@
       <mat-form-field appearance="outline">
         <mat-label>Przypisz do historyjki</mat-label>
         <mat-select formControlName="storyId">
-          @for (storyItem of stories; track storyItem.id) {
-          <mat-option [value]="storyItem.id">{{ storyItem.name }}</mat-option>
+          @for (storyItem of stories; track storyItem._id) {
+          <mat-option [value]="storyItem._id">{{ storyItem.name }}</mat-option>
           }
         </mat-select>
       </mat-form-field>

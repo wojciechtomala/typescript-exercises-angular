@@ -1,3 +1,4 @@
+@if( projectDetails ){
 <div class="stories-list-header">
   <h1>Nazwa projektu: {{ projectDetails.name }}</h1>
   <p>Opis projektu: {{ projectDetails.description }}</p>
@@ -28,7 +29,7 @@
   </div>
   <div class="stories-list-content-container">
     @for (story of filteredStories; track $index) {
-    <div class="story-item" (click)="onEditStoryClick(story.id)">
+    <div class="story-item" (click)="onEditStoryClick(story._id)">
       <div class="story-main-content">
         <div class="story-title">
           <h6>{{ story.name }}</h6>
@@ -43,11 +44,14 @@
         </div>
         <p>{{ story.description }}</p>
       </div>
-      <p class="story-created-at-content">{{ story.createDate }}</p>
-      <button mat-icon-button (click)="deleteStory($event, story.id)">
+      <p class="story-created-at-content">
+        {{ story.createDate | date : "YYYY-MM-dd" }}
+      </p>
+      <button mat-icon-button (click)="deleteStory($event, story._id)">
         <fa-icon [icon]="faTrash" />
       </button>
     </div>
     }
   </div>
 </div>
+}

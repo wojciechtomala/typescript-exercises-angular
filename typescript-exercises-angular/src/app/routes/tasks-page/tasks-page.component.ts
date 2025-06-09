@@ -60,13 +60,28 @@ export class TasksPageComponent implements OnInit {
   }
 
   private fetchAllStories(): void {
-    this.stories = this.storiesService.getAllStories();
+    this.stories = [];
+    this.storiesService.getStories().subscribe({
+      next: (storiesResponse: Story[]) => {
+        this.stories = storiesResponse;
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 
   public fetchTasks(): void {
-    this.tasks = this.taskService.getTasks(
-      this.taskFiltersForm.controls['storyId'].value
-    );
+    this.taskService
+      .getTasks(this.taskFiltersForm.controls['storyId'].value)
+      .subscribe({
+        next: (tasksResponse: Task[]) => {
+          this.tasks = tasksResponse;
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
   }
 
   public onAddTaskModalOpen(): void {
@@ -79,13 +94,15 @@ export class TasksPageComponent implements OnInit {
     });
   }
 
-  public deleteTask(
-    e: Event,
-    clickedStoryId: number,
-    clickedTaskId: number
-  ): void {
+  public deleteTask(e: Event, clickedTaskId: string): void {
     e.stopPropagation();
-    this.taskService.deleteTask(clickedStoryId, clickedTaskId);
-    this.fetchTasks();
+    this.taskService.deleteTask(clickedTaskId).subscribe({
+      next: () => {
+        this.fetchTasks();
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 }

@@ -1,6 +1,6 @@
 <div class="home-page-wrapper">
   <h1>
-    Cześć <b>{{ user.name }}</b
+    Cześć <b>{{ user && user.name }}</b
     >, witaj w ManageMe!
   </h1>
 
@@ -16,7 +16,7 @@
     </li>
     @if(selectedProject){
     <li>
-      <a [routerLink]="'/project/' + selectedProject.id">
+      <a [routerLink]="'/project/' + selectedProject._id">
         <fa-icon [icon]="faThumbtack" />{{ selectedProject.name }}</a
       >
     </li>

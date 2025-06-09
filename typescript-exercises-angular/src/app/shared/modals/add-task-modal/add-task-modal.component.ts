@@ -70,7 +70,12 @@ export class AddTaskModalComponent implements OnInit {
   }
 
   private fetchAllStories(): void {
-    this.stories = this.storiesService.getAllStories();
+    this.stories = [];
+    this.storiesService.getStories().subscribe({
+      next: (storiesResponse: Story[]) => {
+        this.stories = storiesResponse;
+      },
+    });
   }
 
   private initAddStoryModalForm(): void {
@@ -90,13 +95,17 @@ export class AddTaskModalComponent implements OnInit {
       createdAt: newStoryCreateDate,
     });
     if (this.addTaskModalForm.valid) {
-      if (typeof this.addTaskModalForm.controls['storyId'].value === 'number') {
-        this.taskService.createTask(
-          this.addTaskModalForm.controls['storyId'].value,
-          this.addTaskModalForm.value
-        );
-        this._snackBar.open('Sukces: utworzono nowe zadanie', 'Zamknij', {
-          duration: 3000,
+      if (this.addTaskModalForm.controls['storyId'].value) {
+        const reqPayload = { ...this.addTaskModalForm.value, state: 'Todo' };
+        this.taskService.createTask(reqPayload).subscribe({
+          next: () => {
+            this._snackBar.open('Sukces: utworzono nowe zadanie', 'Zamknij', {
+              duration: 3000,
+            });
+          },
+          error: (error) => {
+            console.error(error);
+          },
         });
       } else {
         this._snackBar.open('Wystąpił błąd: Brak id projektu', 'Zamknij', {
