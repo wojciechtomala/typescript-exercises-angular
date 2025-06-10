@@ -92,5 +92,9 @@
         color: #666;
       }
     }
+    .buttons-container {
+      display: flex;
+      gap: 10px;
+    }
   }
 }

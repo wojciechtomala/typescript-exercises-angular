@@ -44,9 +44,22 @@
     <div class="task-item-more-content">
       <p>{{ taskItem.createdAt }}</p>
     </div>
-    <button mat-icon-button (click)="deleteTask($event, taskItem._id)">
-      <fa-icon [icon]="faTrash" />
-    </button>
+    <div class="buttons-container">
+      <button
+        mat-icon-button
+        (click)="editTask($event, taskItem._id)"
+        class="edit-btn"
+      >
+        <fa-icon [icon]="faEdit" />
+      </button>
+      <button
+        mat-icon-button
+        (click)="deleteTask($event, taskItem._id)"
+        class="delete-btn"
+      >
+        <fa-icon [icon]="faTrash" />
+      </button>
+    </div>
   </a>
   } }@else{
   <div class="empty-list">

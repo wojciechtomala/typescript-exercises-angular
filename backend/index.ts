@@ -380,9 +380,9 @@ app.delete("/delete-project/:id", verifyToken, async (req, res) => {
     await Story.deleteMany({ projectId });
     await Task.deleteMany({ storyId: { $in: storyIds } });
 
-    res.status(200).send("Project and related data deleted.");
+    res.status(200).json("Project and related data deleted.");
   } catch (error) {
-    res.status(500).send("Server error");
+    res.status(500).json("Server error");
   }
 });
 

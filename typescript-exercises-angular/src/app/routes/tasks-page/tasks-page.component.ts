@@ -16,8 +16,9 @@ import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AddTaskModalComponent } from '../../shared/modals/add-task-modal/add-task-modal.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { MatButtonModule } from '@angular/material/button';
+import { EditTaskModalComponent } from '../../shared/modals/edit-task-modal/edit-task-modal.component';
 
 @Component({
   selector: 'app-tasks-page',
@@ -35,6 +36,8 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './tasks-page.component.scss',
 })
 export class TasksPageComponent implements OnInit {
+  public readonly faEdit = faEdit;
+
   public readonly faTrash = faTrash;
 
   public taskFiltersForm: FormGroup;
@@ -87,6 +90,20 @@ export class TasksPageComponent implements OnInit {
   public onAddTaskModalOpen(): void {
     const dialogRef = this.dialog.open(AddTaskModalComponent, {
       width: '620px',
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.fetchTasks();
+    });
+  }
+
+  public editTask(e: Event, clickedTaskId: string): void {
+    e.stopPropagation();
+    const dialogRef = this.dialog.open(EditTaskModalComponent, {
+      width: '620px',
+      data: {
+        taskId: clickedTaskId,
+      },
     });
 
     dialogRef.afterClosed().subscribe(() => {

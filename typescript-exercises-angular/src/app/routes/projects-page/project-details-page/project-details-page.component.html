@@ -47,7 +47,11 @@
       <p class="story-created-at-content">
         {{ story.createDate | date : "YYYY-MM-dd" }}
       </p>
-      <button mat-icon-button (click)="deleteStory($event, story._id)">
+      <button
+        mat-icon-button
+        (click)="deleteStory($event, story._id)"
+        class="delete-btn"
+      >
         <fa-icon [icon]="faTrash" />
       </button>
     </div>

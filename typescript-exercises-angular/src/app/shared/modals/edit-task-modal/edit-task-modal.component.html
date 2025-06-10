@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>
+  <div class="dialog-title-content">Edytuj zadanie</div>
+</h2>
+<mat-dialog-content>
+  <form class="add-story-modal-form" [formGroup]="addTaskModalForm">
+    <div class="row grid-1">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nazwa zadania</mat-label>
+        <input matInput formControlName="title" placeholder="Nazwa zadania" />
+        @if (addTaskModalForm.get('title')?.hasError('required')) {
+        <mat-error> Nazwa zadania jest wymagana </mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="row grid-1">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Opis</mat-label>
+        <textarea
+          matInput
+          formControlName="description"
+          placeholder="Describe the story"
+        ></textarea>
+        @if(addTaskModalForm.get('description')?.hasError('required')){
+        <mat-error> Opis zadania jest wymagany </mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="row grid-2">
+      <mat-form-field appearance="outline">
+        <mat-label>Ilość godzin</mat-label>
+        <mat-select formControlName="estimatedWorkHours">
+          <mat-option [value]="1">1</mat-option>
+          <mat-option [value]="3">3</mat-option>
+          <mat-option [value]="5">5</mat-option>
+          <mat-option [value]="8">8</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="state">
+          @for (status of statuses; track $index) {
+          <mat-option [value]="status">{{ status }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row grid-1">
+      <mat-form-field appearance="outline">
+        <mat-label>Przypisz do historyjki</mat-label>
+        <mat-select formControlName="storyId">
+          @for (storyItem of stories; track storyItem._id) {
+          <mat-option [value]="storyItem._id">{{ storyItem.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close="cancel">Anuluj</button>
+  <button mat-button (click)="onSubmit()">Zapisz</button>
+</mat-dialog-actions>
