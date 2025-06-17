@@ -78,7 +78,6 @@ export class EditStoryModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.initEditStoryModalForm();
-    console.log(this.storyId, this.projectId);
     this.getFormValuesByStoryId();
   }
 
@@ -125,7 +124,6 @@ export class EditStoryModalComponent implements OnInit {
           projectId: this.projectId,
           _id: this.storyId,
         };
-        console.log('Submitting Story:', updatedStory);
         if (this.projectId) {
           this.storiesService.updateStory(updatedStory).subscribe({
             next: () => {
@@ -144,7 +142,6 @@ export class EditStoryModalComponent implements OnInit {
         }
         this.dialogRef.close();
       } else {
-        console.log('Form is invalid');
         this._snackBar.open(
           'Wystąpił błąd: nie wszystkie pola zostały uzupełnione',
           'Zamknij',

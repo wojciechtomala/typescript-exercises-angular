@@ -87,22 +87,22 @@ export class StoriesService {
   // }
 
   // HTTPCLIENT:
-  public createStory(newStory: NewStory): Observable<any> {
-    return this._httpClient.post(
+  public createStory(newStory: NewStory): Observable<void> {
+    return this._httpClient.post<void>(
       `${environment.apiURL}/create-story/${newStory.projectId}`,
       newStory
     );
   } // DONE
 
-  public updateStory(story: Story): Observable<any> {
-    return this._httpClient.put(
+  public updateStory(story: Story): Observable<void> {
+    return this._httpClient.put<void>(
       `${environment.apiURL}/update-story/${story._id}`,
       story
     );
   } // DONE
 
-  public deleteStory(storyId: string): Observable<any> {
-    return this._httpClient.delete(
+  public deleteStory(storyId: string): Observable<void> {
+    return this._httpClient.delete<void>(
       `${environment.apiURL}/delete-story/${storyId}`
     );
   } // DONE

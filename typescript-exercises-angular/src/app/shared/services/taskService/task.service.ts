@@ -97,22 +97,22 @@ export class TaskService {
   // }
 
   // HTTPCLIENT:
-  public createTask(newTask: NewTask): Observable<any> {
-    return this._httpClient.post(
+  public createTask(newTask: NewTask): Observable<void> {
+    return this._httpClient.post<void>(
       `${environment.apiURL}/create-task/${newTask.storyId}`,
       newTask
     );
   } // DONE
 
-  public updateTask(task: Task): Observable<any> {
-    return this._httpClient.put(
+  public updateTask(task: Task): Observable<void> {
+    return this._httpClient.put<void>(
       `${environment.apiURL}/update-task/${task._id}`,
       task
     );
   } // DONE
 
-  public deleteTask(taskId: string): Observable<any> {
-    return this._httpClient.delete(
+  public deleteTask(taskId: string): Observable<void> {
+    return this._httpClient.delete<void>(
       `${environment.apiURL}/delete-task/${taskId}`
     );
   } // DONE

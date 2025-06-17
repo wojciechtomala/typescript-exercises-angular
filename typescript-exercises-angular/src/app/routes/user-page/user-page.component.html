@@ -1,6 +1,8 @@
 @if(user){
 <div class="user-container">
-  <p>Nazwa użytkownika: {{ user.name + " " + user.surname }}</p>
+  <p>
+    Nazwa użytkownika: <b>{{ user.name + " " + user.surname }}</b>
+  </p>
   <button class="logout-btn" mat-raised-button (click)="onLogout()">
     Wyloguj się
   </button>

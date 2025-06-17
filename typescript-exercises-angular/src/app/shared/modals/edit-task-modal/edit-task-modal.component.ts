@@ -143,7 +143,6 @@ export class EditTaskModalComponent implements OnInit {
       }
       this.dialogRef.close();
     } else {
-      console.log('Form is invalid');
       this._snackBar.open(
         'Wystąpił błąd: nie wszystkie pola zostały uzupełnione',
         'Zamknij',

@@ -52,8 +52,11 @@ export class LoginPageComponent implements OnInit {
           this.loginForm.controls['password'].value
         )
         .subscribe({
-          next: (res) => {
-            this.authService.saveTokens(res.token, res.refreshToken);
+          next: (loginResponseData) => {
+            this.authService.saveTokens(
+              loginResponseData.token,
+              loginResponseData.refreshToken
+            );
             this.authService.updateLoggedInStatus();
           },
           error: (error) => {

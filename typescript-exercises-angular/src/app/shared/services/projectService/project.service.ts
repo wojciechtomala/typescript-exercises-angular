@@ -97,22 +97,22 @@ export class ProjectService {
   // }
 
   // HTTPCLIENT:
-  public createProject(newProject: NewProject): Observable<any> {
-    return this._httpClient.post(
+  public createProject(newProject: NewProject): Observable<void> {
+    return this._httpClient.post<void>(
       `${environment.apiURL}/create-project`,
       newProject
     );
   } // DONE
 
-  public updateProject(project: Project): Observable<any> {
-    return this._httpClient.put(
+  public updateProject(project: Project): Observable<void> {
+    return this._httpClient.put<void>(
       `${environment.apiURL}/update-project`,
       project
     );
   } // DONE
 
-  public deleteProject(projectId: string): Observable<any> {
-    return this._httpClient.delete(
+  public deleteProject(projectId: string): Observable<void> {
+    return this._httpClient.delete<void>(
       `${environment.apiURL}/delete-project/${projectId}`
     );
   } // DONE
@@ -127,8 +127,8 @@ export class ProjectService {
     );
   } // DONE
 
-  public setSelectedProject(projectId: string): Observable<any> {
-    return this._httpClient.put<any>(
+  public setSelectedProject(projectId: string): Observable<void> {
+    return this._httpClient.put<void>(
       `${environment.apiURL}/set-selected-project/${projectId}`,
       {}
     );

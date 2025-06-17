@@ -106,7 +106,6 @@ export class AddStoryModalComponent implements OnInit {
           projectId: this.projectId,
           tasks: [],
         };
-        console.log('Submitting Story:', newStory);
         if (this.projectId) {
           this.storiesService.createStory(newStory).subscribe({
             next: () => {
@@ -131,7 +130,6 @@ export class AddStoryModalComponent implements OnInit {
         }
         this.dialogRef.close();
       } else {
-        console.log('Form is invalid');
         this._snackBar.open(
           'Wystąpił błąd: nie wszystkie pola zostały uzupełnione',
           'Zamknij',

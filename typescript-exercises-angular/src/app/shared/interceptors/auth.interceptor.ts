@@ -8,6 +8,7 @@ import {
 } from '@angular/common/http';
 import { Observable, catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/authService/auth.service';
+import { LoginDataResponse } from '../models/loginDataResponse.model';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -18,8 +19,6 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     const token = this.auth.getToken();
-    console.log('asdasdsad');
-    console.log('token', token);
     let authReq = req;
     if (token) {
       authReq = req.clone({
@@ -31,11 +30,14 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           return this.auth.refreshToken().pipe(
-            switchMap((res: any) => {
-              this.auth.saveTokens(res.token, res.refreshToken);
+            switchMap((loginResponseData: LoginDataResponse) => {
+              this.auth.saveTokens(
+                loginResponseData.token,
+                loginResponseData.refreshToken
+              );
               const newReq = req.clone({
                 setHeaders: {
-                  Authorization: `Bearer ${res.token}`,
+                  Authorization: `Bearer ${loginResponseData.token}`,
                 },
               });
               return next.handle(newReq);
